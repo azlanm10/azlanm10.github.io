@@ -1,6 +1,15 @@
 body.project-page #main > section {
 	text-align: left;
 }
+
+body.project-page #main {
+	margin-left: 0;
+	width: 100%;
+}
+
+body.project-page #footer {
+	margin-left: 0;
+}
 /* Placeholder until project image is added (remove span when using img) */
 .image-placeholder {
 	display: flex;
