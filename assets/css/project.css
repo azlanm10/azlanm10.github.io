@@ -223,6 +223,31 @@ body.project-page #main {
 	text-align: left;
 }
 
+.project-screenshots {
+	margin: 2em auto;
+	max-width: 100%;
+	width: 900px;
+	text-align: center;
+}
+
+.project-screenshots img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+	border: 1px solid #e1e4e8;
+	border-radius: 4px;
+}
+
+.project-screenshots figcaption {
+	font-size: 0.9em;
+	color: #555;
+	margin-top: 0.75em;
+	font-style: italic;
+	font-weight: bold;
+	text-align: center;
+}
+
 @media screen and (max-width: 736px) {
 	.project-detail {
 		padding: 2em 1.25em 3em;
