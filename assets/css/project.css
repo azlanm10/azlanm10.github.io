@@ -1,4 +1,4 @@
-body.project-page section.two {
+body.project-page #main > section {
 	text-align: left;
 }
 /* Placeholder until project image is added (remove span when using img) */
