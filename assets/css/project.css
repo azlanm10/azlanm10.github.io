@@ -1,3 +1,6 @@
+body.project-page section.two {
+	text-align: left;
+}
 /* Placeholder until project image is added (remove span when using img) */
 .image-placeholder {
 	display: flex;
@@ -49,6 +52,8 @@ body.project-page #main {
 	max-width: 52em;
 	margin: 0 auto;
 	padding: 3em 2em 4em;
+	text-align: justify;
+	hyphens: auto;
 }
 
 .project-detail .back-link {
@@ -204,6 +209,8 @@ body.project-page #main {
 @media screen and (max-width: 736px) {
 	.project-detail {
 		padding: 2em 1.25em 3em;
+		text-align: left;
+		hyphens: auto;
 	}
 
 	.project-detail h1 {
