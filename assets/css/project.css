@@ -211,6 +211,7 @@ body.project-page #main {
     overflow-x: auto;
     margin: 0;
     white-space: pre-wrap;
+	text-align: left;
 }
 
 @media screen and (max-width: 736px) {

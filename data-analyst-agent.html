@@ -105,66 +105,65 @@
 
 					<details class="project-eda-details">
     					<summary>View sample EDA output</summary>
-    					<pre class="project-eda-output">
-						============================================================
-						DATASET PROFILE
-						============================================================
-						shape: 9,741 rows × 6 columns
-						columns: Transaction ID, Item, Quantity, Price Per Unit, Total Spent, Transaction Date
-
-						Observations:
-						• The dataset contains 9,741 transactions with an average quantity
-							of approximately 3 items per transaction, indicating consistent
-							purchasing behavior among customers.
-						• The most frequently purchased item is juice (1,499 transactions),
-							while notable occurrences of 'unknown' and 'error' items may
-							require further investigation.
-
-						============================================================
-						MISSINGNESS ANALYSIS
-						============================================================
-						complete_rows: 9,741 (100.0%)
-
-						Observations:
-						• No missing values in any column — the dataset is fully populated,
-							so all variables are available for analysis without imputation.
-
-						============================================================
-						AGGREGATES ANALYSIS
-						============================================================
-						group_by: Item
-
-						Observations:
-						• Juice is the most popular item (1,499 purchases), followed by
-							coffee and cake — a strong preference for beverages and desserts.
-						• Max price for juice and salad is $5.00 (premium offerings),
-							while coffee and cake sit at $3.00 (more affordable).
-
-						============================================================
-						RELATIONSHIPS ANALYSIS
-						============================================================
-						Observations:
-						• Strong positive correlation (0.65) between Quantity and Total Spent
-							— higher quantities lead to significantly higher spending.
-						• Mean price range across items is 3.77, suggesting considerable
-							pricing variation that could influence purchasing behavior.
-
-						============================================================
-						FINAL SYNTHESIS
-						============================================================
-						Summary:
-						Consistent purchasing behavior with juice leading sales, followed by
-						coffee and cake. A strong positive correlation between quantity and
-						total spent indicates higher quantities drive increased spending,
-						while pricing variation across items may influence decisions.
-
-						Recommendations:
-						• Investigate 'unknown' and 'error' items to understand their impact
-							on sales and customer experience.
-						• Promote top-sellers (juice, coffee, cake) to boost sales further.
-						• Segment customers by purchasing behavior for tailored marketing.
-						• Refine pricing strategy for premium items (juice, salad) to
-							maximise revenue while maintaining interest.</pre>
+						<pre class="project-eda-output">============================================================
+							DATASET PROFILE
+							============================================================
+							shape: 9,741 rows × 6 columns
+							columns: Transaction ID, Item, Quantity, Price Per Unit, Total Spent, Transaction Date
+							
+							Observations:
+							  • The dataset contains 9,741 transactions with an average quantity
+								of approximately 3 items per transaction, indicating consistent
+								purchasing behavior among customers.
+							  • The most frequently purchased item is juice (1,499 transactions),
+								while notable occurrences of 'unknown' and 'error' items may
+								require further investigation.
+							
+							============================================================
+							MISSINGNESS ANALYSIS
+							============================================================
+							complete_rows: 9,741 (100.0%)
+							
+							Observations:
+							  • No missing values in any column — the dataset is fully populated,
+								so all variables are available for analysis without imputation.
+							
+							============================================================
+							AGGREGATES ANALYSIS
+							============================================================
+							group_by: Item
+							
+							Observations:
+							  • Juice is the most popular item (1,499 purchases), followed by
+								coffee and cake — a strong preference for beverages and desserts.
+							  • Max price for juice and salad is $5.00 (premium offerings),
+								while coffee and cake sit at $3.00 (more affordable).
+							
+							============================================================
+							RELATIONSHIPS ANALYSIS
+							============================================================
+							Observations:
+							  • Strong positive correlation (0.65) between Quantity and Total Spent
+								— higher quantities lead to significantly higher spending.
+							  • Mean price range across items is 3.77, suggesting considerable
+								pricing variation that could influence purchasing behavior.
+							
+							============================================================
+							FINAL SYNTHESIS
+							============================================================
+							Summary:
+							Consistent purchasing behavior with juice leading sales, followed by
+							coffee and cake. A strong positive correlation between quantity and
+							total spent indicates higher quantities drive increased spending,
+							while pricing variation across items may influence decisions.
+							
+							Recommendations:
+							  • Investigate 'unknown' and 'error' items to understand their impact
+								on sales and customer experience.
+							  • Promote top-sellers (juice, coffee, cake) to boost sales further.
+							  • Segment customers by purchasing behavior for tailored marketing.
+							  • Refine pricing strategy for premium items (juice, salad) to
+								maximise revenue while maintaining interest.</pre>
 						</details>
 
 					<h3>Pipeline flow</h3>
