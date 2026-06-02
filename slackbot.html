@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Music Store Analytics Slackbot | Md. Azlan</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/project.css" />
+	</head>
+	<body class="is-preload project-page">
+
+		<div id="main">
+			<section class="two">
+				<div class="project-detail">
+
+					<a href="index.html#portfolio" class="back-link icon solid fa-arrow-left"> Back to Portfolio</a>
+
+					<div class="project-hero-image">
+						<img src="images/data_analyst_agent_cover.png" alt="Data Analyst Agent" />
+					</div>
+
+					<header>
+						<h1>Music Store Analytics Slackbot</h1>
+						<p class="project-tagline">End-to-end agentic system for natural-language querying of a PostgreSQL database from Slack</p>
+						<p class="project-lead">A Slack-native “talk to your data” agent built from scratch, where every request id validated and passed through guardrails, resolve follow-ups with conversation memory, and run NL→SQL through a multi-step engine with a YAML semantic layer and generate a Slack output (tables and charts).</p>
+
+					<h2>Overview</h2>
+					<p>Every new dataset starts with the same process: clean the data, understand it and then decide what must be done next. I built an agentic data analysis system which is not just a single script, instead they are divided into three connected pieces:</p>
+					<ul>
+						<li><strong>Data Cleaning Agent</strong> – LLM-driven cleaning with Streamlit dashboard.</li>
+						<li><strong>Exploratory Data Analysis (EDA) Agent</strong> – automated exploration, synthesizing findings and generating recommendations.</li>
+						<li><strong>Orchestrator</strong> – a workflow that runs both the agents together with safety checks and fail-safe routing.</li>
+					</ul>
+					<p>Collectively, we get agents with a layer on top of it that makes them work as a single pipeline.</p>
+
+					<h2>The problem</h2>
+					<ul>
+						<li>Cleaning and EDA are usually separate, which are usually done manually across different tools.</li>
+						<li>Trusting that the cleansing process improved the data quality can be harder to perceive without clear before/after feedback.</li>
+						<li>Sending sensitive or broken data to an LLM can be risky and wasteful.</li>
+						<li>Having one system that runs the steps in order and stops or skips when something does not succeed or is not safe.</li>
+					</ul>
+
+					<h2>What was built</h2>
+					<ol class="project-numbered-list">
+						<li>
+							<strong>Data cleaning agent</strong>
+							<ul>
+								<li>Takes raw CSV files as input and an additional natural-language cleaning instruction (optional).</li>
+								<li>LangGraph workflow uses an LLM inside to automate the cleaning process (data types, missing values, outliers).</li>
+								<li>Streamlit dashboard to:
+									<ul>
+										<li>View the pre-cleaned dataset and cleaned dataset with before/after indicators; for instance, missing values reduced, duplicates removed, invalid entries resolved, etc., which shows the impact of the cleaning process and not hidden in a black box.</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<strong>EDA agent</strong>
+							<ul>
+								<li>Runs automated exploratory analysis on cleaned data</li>
+								<li>Gives a summary of findings and generates actionable recommendations for next steps</li>
+							</ul>
+						</li>
+						<li>
+							<strong>Data analyst orchestrator</strong>
+							<ul>
+								<li>Parent LangGraph workflow that chains cleaning → EDA</li>
+								<li>Personally Identifiable Information (PII) checks on column names before any LLM call is made (e.g. email, phone, SSN patterns)</li>
+								<li>Fail-safe routing:
+									<ul>
+										<li>Stop the pipeline if PII-like columns are detected.</li>
+										<li>Skip EDA if cleaning fails — no analysis will be done on bad or incomplete data</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ol>
+
+					<p class="project-pipeline"><strong>Full pipeline:</strong> Raw CSV → Sensitive-column check → Clean → Explore → Summary + recommendations</p>
+
+					<h2>How it works</h2>
+					<ul>
+						<li><strong>Input:</strong> Upload a CSV file and add additional instructions on how to clean (optional).</li>
+						<li><strong>Guardrail:</strong> Orchestrator scans column names for PII-like patterns. If flagged, the pipeline ends before passing it to the LLM model.</li>
+						<li><strong>Cleaning:</strong> Cleaning agent processes the data. Use Streamlit to inspect cleaned rows and before/after metrics (e.g. fewer nulls after cleaning).</li>
+						<li><strong>Routing:</strong> Orchestrator checks if the cleaning process is successful. If not, the EDA process is not triggered.</li>
+						<li><strong>EDA:</strong> EDA agent analyzes the cleaned dataset and returns a summary of the findings; based on those findings, recommendations are generated.</li>
+						<li><strong>Output:</strong> Cleaned data, EDA summary and recommendations, and any PII flags from the guardrail step.</li>
+					</ul>
+
+					<h3>Pipeline flow</h3>
+                    <figure class="project-graph">
+                    	<img src="images/data_analyst_agent_graph.png" alt="LangGraph orchestrator showing PII check, clean_data, and run_eda nodes with fail-safe routing to end" />
+                    	<figcaption>Orchestrator graph: PII check gates the pipeline; cleaning failures skip EDA.</figcaption>
+                    </figure>
+
+					<h2>Technical highlights</h2>
+					<ul>
+						<li>Three LangGraph agents: two task-specific (data cleaning agent, EDA agent) and one parent orchestrator.</li>
+						<li>Multi-agent composition: sub-agents invoked as nodes; orchestrator handles flow, integration, and routing.</li>
+						<li>Pre-LLM privacy guardrails: sensitive-column detection before data reaches models.</li>
+						<li>Fail-safe pipeline behavior: hard stop on PII; skip EDA on cleaning failure.</li>
+						<li>Streamlit before/after metrics: makes cleaning impact transparent and verifiable.</li>
+						<li>Modular design: cleaning and EDA agents can work as standalone processes or inside the full pipeline.</li>
+					</ul>
+
+					<h2>Tech stack</h2>
+					<p>Python · Poetry · pandas · LangGraph · LangChain · OpenAI · Streamlit · python-dotenv · LangSmith</p>
+
+					<h2>Outcomes</h2>
+					<p>A reusable agentic data analysis stack you can use in parts or as a whole:</p>
+					<ul>
+						<li>Run cleaning alone and validate the impact in Streamlit.</li>
+						<li>Run EDA Agent on cleaned data and get a summary of findings and recommendations.</li>
+						<li>Or run the full pipeline from raw CSV to recommendations, with guardrails that reflect how you’d possibly handle real datasets.</li>
+					</ul>
+
+					<h2>Links</h2>
+					<ul>
+						<li><strong>Data Cleaning Agent:</strong> <a href="https://github.com/azlanm10/data_cleaning_agent" target="_blank" rel="noopener noreferrer">azlanm10/data_cleaning_agent</a></li>
+						<li><strong>EDA Agent:</strong> <a href="https://github.com/azlanm10/eda_workflow" target="_blank" rel="noopener noreferrer">azlanm10/eda_workflow</a></li>
+						<li><strong>Data Analyst Agent:</strong> <a href="https://github.com/azlanm10/data_analyst_agent" target="_blank" rel="noopener noreferrer">azlanm10/data_analyst_agent</a></li>
+					</ul>
+				</div>
+			</section>
+		</div>
+
+		<div id="footer">
+			<ul class="copyright">
+				<li>&copy; 2026 All rights reserved.</li>
+			</ul>
+		</div>
+
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

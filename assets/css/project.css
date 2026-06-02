@@ -1,0 +1,237 @@
+/* Placeholder until project image is added (remove span when using img) */
+.image-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 220px;
+	background: #2e3842;
+	color: #a8b5c4;
+	font-size: 1em;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	border: 2px dashed #6cc644;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.project-graph {
+    margin: 2em auto;
+    text-align: center;
+    max-width: 400px;
+}
+.project-graph img {
+    max-width: 100%;
+    height: auto;
+}
+.project-graph figcaption {
+    font-size: 0.9em;
+    color: #888;
+    margin-top: 0.5em;
+    font-style: italic;
+}
+
+.project-detail .project-hero-image .image-placeholder {
+	min-height: 280px;
+}
+
+/* Project detail pages */
+body.project-page {
+	background: #fff;
+}
+
+body.project-page #main {
+	margin-left: 0;
+	width: 100%;
+}
+
+.project-detail {
+	max-width: 52em;
+	margin: 0 auto;
+	padding: 3em 2em 4em;
+}
+
+.project-detail .back-link {
+	display: inline-block;
+	margin-bottom: 2em;
+	font-size: 0.95em;
+}
+
+.project-detail .project-hero-image {
+	margin: 0 0 2em 0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.project-detail .project-hero-image img {
+	width: 100%;
+	display: block;
+}
+
+.project-detail h1 {
+	font-size: 2.25em;
+	line-height: 1.2;
+	margin: 0 0 0.35em 0;
+	letter-spacing: -1px;
+}
+
+.project-detail .project-tagline {
+	font-size: 1.35em;
+	color: #555;
+	line-height: 1.5;
+	margin: 0 0 1.25em 0;
+}
+
+.project-detail .project-lead {
+	font-size: 1.1em;
+	line-height: 1.65;
+	color: #444;
+	margin: 0 0 2.5em 0;
+}
+
+.project-detail h2 {
+	font-size: 1.5em;
+	margin: 2em 0 0.75em 0;
+	padding-bottom: 0.35em;
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.project-detail p {
+	font-size: 1.05em;
+	line-height: 1.7;
+	margin: 0 0 1em 0;
+}
+
+.project-detail ul {
+	margin: 0 0 1.5em 0;
+	padding-left: 1.5em;
+}
+
+.project-detail ul li {
+	font-size: 1.05em;
+	line-height: 1.65;
+	margin-bottom: 0.5em;
+}
+
+.project-detail ol.project-numbered-list {
+	margin: 0 0 1.5em 0;
+	padding-left: 1.75em;
+	list-style-type: decimal;
+}
+
+.project-detail ol.project-numbered-list > li {
+	font-size: 1.05em;
+	line-height: 1.65;
+	margin-bottom: 1.75em;
+	padding-left: 0.25em;
+}
+
+.project-detail ol.project-numbered-list > li > strong {
+	display: block;
+	font-size: 1.12em;
+	margin-bottom: 0.5em;
+}
+
+.project-detail ol.project-numbered-list ul {
+	margin: 0.35em 0 0 0;
+	padding-left: 1.5em;
+	list-style-type: disc;
+}
+
+.project-detail ol.project-numbered-list ul li {
+	font-size: 1em;
+	line-height: 1.65;
+	margin-bottom: 0.45em;
+}
+
+.project-detail ol.project-numbered-list ul ul {
+	margin-top: 0.35em;
+	padding-left: 1.35em;
+	list-style-type: circle;
+}
+
+.project-detail ol.project-numbered-list ul ul li {
+	font-size: 0.97em;
+	line-height: 1.6;
+	margin-bottom: 0.35em;
+}
+
+.project-detail .project-pipeline {
+	font-size: 1.08em;
+	line-height: 1.65;
+	margin: 0.5em 0 0 0;
+	padding: 1em 1.15em;
+	background: #f5f7f9;
+	border-left: 3px solid #6cc644;
+	border-radius: 0 4px 4px 0;
+}
+
+.project-eda-details {
+    margin: 1.5em 0;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.project-eda-details summary {
+    padding: 0.75em 1em;
+    background: #f6f8fa;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+}
+
+.project-eda-details summary:hover {
+    background: #eaeef2;
+}
+
+.project-eda-details[open] summary {
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.project-eda-output {
+    background: #f6f8fa;
+    padding: 1.5em;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #24292e;
+    overflow-x: auto;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+@media screen and (max-width: 736px) {
+	.project-detail {
+		padding: 2em 1.25em 3em;
+	}
+
+	.project-detail h1 {
+		font-size: 1.75em;
+	}
+
+	.project-detail .project-tagline {
+		font-size: 1.15em;
+	}
+
+	.project-detail .project-lead,
+	.project-detail p,
+	.project-detail ul li,
+	.project-detail ol.project-numbered-list > li,
+	.project-detail ol.project-numbered-list ul li,
+	.project-detail ol.project-numbered-list ul ul li {
+		font-size: 1em;
+	}
+
+	.project-detail ol.project-numbered-list > li > strong {
+		font-size: 1.05em;
+	}
+
+	.project-detail .project-pipeline {
+		font-size: 1em;
+	}
+
+	.project-detail h2 {
+		font-size: 1.25em;
+	}
+}
