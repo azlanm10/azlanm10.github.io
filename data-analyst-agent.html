@@ -118,56 +118,57 @@ categorical_columns: ['Transaction ID', 'Item', 'Transaction Date']
 numeric_summary: dict with 3 items
 categorical_summary: dict with 3 items
 							
-							Observations:
-							  • The dataset contains 9741 transactions with an average quantity of approximately 3 items per transaction, indicating a consistent purchasing behavior among customers.        
-							  • The most frequently purchased item is juice, with 1499 transactions, while there are notable occurrences of 'unknown' and 'error' items, which may require further investigation.
+Observations:
+• The dataset contains 9741 transactions with an average quantity of approximately 3 items per transaction, indicating a consistent purchasing behavior among customers.        
+• The most frequently purchased item is juice, with 1499 transactions, while there are notable occurrences of 'unknown' and 'error' items, which may require further investigation.
 							
-							============================================================
-							MISSINGNESS ANALYSIS
-							============================================================
-							total_rows: 9741
-							missing_count: {'Transaction ID': 0, 'Item': 0, 'Quantity': 0, 'Price Per Unit': 0, 'Total Spent': 0, 'Transaction Date': 0}
-							missing_percentage: {'Transaction ID': 0.0, 'Item': 0.0, 'Quantity': 0.0, 'Price Per Unit': 0.0, 'Total Spent': 0.0, 'Transaction Date': 0.0}
-							high_missing_columns: {}
-							complete_rows: 9741
-							complete_rows_pct: 100.0
+============================================================
+MISSINGNESS ANALYSIS
+============================================================
+total_rows: 9741
+missing_count: {'Transaction ID': 0, 'Item': 0, 'Quantity': 0, 'Price Per Unit': 0, 'Total Spent': 0, 'Transaction Date': 0}
+missing_percentage: {'Transaction ID': 0.0, 'Item': 0.0, 'Quantity': 0.0, 'Price Per Unit': 0.0, 'Total Spent': 0.0, 'Transaction Date': 0.0}
+high_missing_columns: {}
+complete_rows: 9741
+complete_rows_pct: 100.0
 							
-							Observations:
-							  • There are no missing values in any of the columns, indicating a complete dataset with 9741 rows.
-							  • The dataset is fully populated, which is beneficial for analysis as it ensures that all variables are available for insights without the need for imputation.
+Observations:
+• There are no missing values in any of the columns, indicating a complete dataset with 9741 rows.
+• The dataset is fully populated, which is beneficial for analysis as it ensures that all variables are available for insights without the need for imputation.
 							
-							============================================================
-							AGGREGATES ANALYSIS
-							============================================================
-							group_by_columns: ['Item']
-							aggregates: dict with 1 items
-							
-							Observations:
-							  • Juice is the most popular item with 1499 purchases, followed closely by coffee and cake, indicating a strong preference for beverages and desserts.
-							  • The maximum price per unit for juice and salad is the highest at $5.00, suggesting these items may be premium offerings, while coffee and cake are more affordable at $3.00 and $3.00 respectively.
-							
-							============================================================
-							RELATIONSHIPS ANALYSIS
-							============================================================
-							numeric_numeric_correlation: [{'feature_col1': 'Quantity', 'feature_col2': 'Total Spent', 'correlation': 0.6546}, {'feature_col1': 'Price Per Unit', 'feature_col2': 'Total Spent', 'correlation': 0.5785}]
-							numeric_categorical_mean_range: [{'numeric_feature': 'Quantity', 'categorical_feature': 'Item', 'mean_range': 0.5285373385738352, 'relative_mean_range': np.float64(0.17752162661360352)}, {'numeric_feature': 'Price Per Unit', 'categorical_feature': 'Item', 'mean_range': 3.7670329670329674, 'relative_mean_range': np.float64(1.2983058761960882)}, {'numeric_feature': 'Total Spent', 'categorical_feature': 'Item', 'mean_range': 8.936996336996337, 'relative_mean_range': np.float64(1.057722011781632)}]
-							
-							Observations:
-							  • There is a strong positive correlation (0.6546) between Quantity and Total Spent, indicating that as the quantity of items purchased increases, the total amount spent also tends to increase significantly.
-							  • The mean range for Price Per Unit across different items is notably high (3.77), suggesting that there is considerable variation in pricing among the items, which could influence purchasing behavior.
-							
-							============================================================
-							FINAL SYNTHESIS
-							============================================================
-							
-							Summary:
-							The analysis reveals a consistent purchasing behavior among customers, with juice being the most popular item, followed by coffee and cake. A strong positive correlation exists between quantity purchased and total spent, indicating that higher quantities lead to increased spending, while significant price variation among items suggests potential influences on purchasing decisions.
-							
-							Recommendations:
-							  • Investigate the occurrences of 'unknown' and 'error' items to understand their impact on sales and customer experience.
-							  • Consider promotional strategies for juice, coffee, and cake, as they are the top-selling items, to further boost sales.
-							  • Analyze customer segments based on purchasing behavior to tailor marketing efforts and product offerings more effectively.
-							  • Explore pricing strategies for premium items like juice and salad to maximize revenue while maintaining customer interest.
+============================================================
+AGGREGATES ANALYSIS
+============================================================
+group_by_columns: ['Item']
+aggregates: dict with 1 items
+
+Observations:
+• Juice is the most popular item with 1499 purchases, followed closely by coffee and cake, indicating a strong preference for beverages and desserts.
+• The maximum price per unit for juice and salad is the highest at $5.00, suggesting these items may be premium offerings, while coffee and cake are more affordable at $3.00 and $3.00 respectively.
+
+============================================================
+RELATIONSHIPS ANALYSIS
+============================================================
+
+numeric_numeric_correlation: [{'feature_col1': 'Quantity', 'feature_col2': 'Total Spent', 'correlation': 0.6546}, {'feature_col1': 'Price Per Unit', 'feature_col2': 'Total Spent', 'correlation': 0.5785}]
+numeric_categorical_mean_range: [{'numeric_feature': 'Quantity', 'categorical_feature': 'Item', 'mean_range': 0.5285373385738352, 'relative_mean_range': np.float64(0.17752162661360352)}, {'numeric_feature': 'Price Per Unit', 'categorical_feature': 'Item', 'mean_range': 3.7670329670329674, 'relative_mean_range': np.float64(1.2983058761960882)}, {'numeric_feature': 'Total Spent', 'categorical_feature': 'Item', 'mean_range': 8.936996336996337, 'relative_mean_range': np.float64(1.057722011781632)}]
+
+Observations:
+• There is a strong positive correlation (0.6546) between Quantity and Total Spent, indicating that as the quantity of items purchased increases, the total amount spent also tends to increase significantly.
+• The mean range for Price Per Unit across different items is notably high (3.77), suggesting that there is considerable variation in pricing among the items, which could influence purchasing behavior.
+
+============================================================
+FINAL SYNTHESIS
+============================================================
+
+Summary:
+The analysis reveals a consistent purchasing behavior among customers, with juice being the most popular item, followed by coffee and cake. A strong positive correlation exists between quantity purchased and total spent, indicating that higher quantities lead to increased spending, while significant price variation among items suggests potential influences on purchasing decisions.
+
+Recommendations:
+• Investigate the occurrences of 'unknown' and 'error' items to understand their impact on sales and customer experience.
+• Consider promotional strategies for juice, coffee, and cake, as they are the top-selling items, to further boost sales.
+• Analyze customer segments based on purchasing behavior to tailor marketing efforts and product offerings more effectively.
+• Explore pricing strategies for premium items like juice and salad to maximize revenue while maintaining customer interest.</pre>
 						</details>
 
 					<h3>Pipeline flow</h3>
