@@ -10,6 +10,10 @@ body.project-page #main {
 body.project-page #footer {
 	margin-left: 0;
 }
+
+body.project-page #headerToggle {
+    display: none;
+}
 /* Placeholder until project image is added (remove span when using img) */
 .image-placeholder {
 	display: flex;
