@@ -14,6 +14,12 @@ body.project-page #footer {
 body.project-page #headerToggle {
     display: none;
 }
+
+@media screen and (max-width: 960px) {
+    body.project-page #headerToggle {
+        display: none;
+    }
+}
 /* Placeholder until project image is added (remove span when using img) */
 .image-placeholder {
 	display: flex;
