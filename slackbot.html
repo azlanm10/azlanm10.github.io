@@ -25,102 +25,149 @@
 						<p class="project-lead">A Slack-native “talk to your data” agent built from scratch, where every request id validated and passed through guardrails, resolve follow-ups with conversation memory, and run NL→SQL through a multi-step engine with a YAML semantic layer and generate a Slack output (tables and charts).</p>
 
 					<h2>Overview</h2>
-					<p>Every new dataset starts with the same process: clean the data, understand it and then decide what must be done next. I built an agentic data analysis system which is not just a single script, instead they are divided into three connected pieces:</p>
+					<p>Every analytics question in Slack should be safe, in-scope, and answerable without directly using SQL. I built a complete agentic analytics system with connecting layers:</p>
 					<ul>
-						<li><strong>Data Cleaning Agent</strong> – LLM-driven cleaning with Streamlit dashboard.</li>
-						<li><strong>Exploratory Data Analysis (EDA) Agent</strong> – automated exploration, synthesizing findings and generating recommendations.</li>
-						<li><strong>Orchestrator</strong> – a workflow that runs both the agents together with safety checks and fail-safe routing.</li>
+						<li><strong>Intake (Invoke)</strong>: domain validations, read-only/prompt-injection/PII guardrails, greetings, LLM follow-up resolution.</li>
+						<li><strong>Engine </strong>: Planner (first turn vs follow-up), Orchestrator, Pandas AI Reasoner (NL→SQL: Chinook Database).</li>
+						<li><strong>Output</strong>: response builder (sending responses, tables and charts to Slack).</li>
+						<li><strong>Memory</strong>: per-channel short-term conversation history for follow-ups.</li>
+						<li><strong>Semantic Layer</strong>: YAML table/view definitions that limits what’s allowed and guide SQL generation</li>
 					</ul>
-					<p>Collectively, we get agents with a layer on top of it that makes them work as a single pipeline.</p>
+					<p>Together they form one product story: specialized intake and engine components plus the layer that makes it work in a single Slack pipeline.</p>
 
 					<h2>The problem</h2>
 					<ul>
-						<li>Cleaning and EDA are usually separate, which are usually done manually across different tools.</li>
-						<li>Trusting that the cleansing process improved the data quality can be harder to perceive without clear before/after feedback.</li>
-						<li>Sending sensitive or broken data to an LLM can be risky and wasteful.</li>
-						<li>Having one system that runs the steps in order and stops or skips when something does not succeed or is not safe.</li>
+						<li>Business users need quick answers from the data but wouldn't want to access the database or wait on an analyst to get them.</li>
+						<li>Follow-up questions (“top 3”, “chart that”) are ambiguous without conversation context.</li>
+						<li>Sending out-of-scope, PII-seeking, or jailbreak-style prompts to an LLM is risky.</li>
+						<li>NL→SQL needs schema awareness so queries match the real tables or data and not hallucinated ones that LLM might inevnt.</li>
+						<li>So, I needed one system that validates scope, enforces safety, runs the right execution mode, and formats answers clearly in-channel</li>
 					</ul>
 
 					<h2>What was built</h2>
 					<ol class="project-numbered-list">
 						<li>
-							<strong>Data cleaning agent</strong>
+							<strong>Intake (Invoke)</strong>
 							<ul>
-								<li>Takes raw CSV files as input and an additional natural-language cleaning instruction (optional).</li>
-								<li>LangGraph workflow uses an LLM inside to automate the cleaning process (data types, missing values, outliers).</li>
-								<li>Streamlit dashboard to:
-									<ul>
-										<li>View the pre-cleaned dataset and cleaned dataset with before/after indicators; for instance, missing values reduced, duplicates removed, invalid entries resolved, etc., which shows the impact of the cleaning process and not hidden in a black box.</li>
-									</ul>
-								</li>
+								<li>Slack Bolt message handler (Socket Mode): extracts text and channel, wires the full flow.</li>
+								<li>Validator: music-store domain check via keyword rules (case-insensitive).</li>
+								<li>Guardrails: regex checks for PII terms, SQL Write operations (delete, drop, update, etc.), and prompt-injection patterns.</li>
+								<li>Context resolver: LLM expands short follow-ups using the last user/assistant turn when the message doesn't have music keywords.</li>
+								<li>Help &amp; greeting: fixed responses for initial interactions.</li>
 							</ul>
 						</li>
 						<li>
-							<strong>EDA agent</strong>
+							<strong>Engine</strong>
 							<ul>
-								<li>Runs automated exploratory analysis on cleaned data</li>
-								<li>Gives a summary of findings and generates actionable recommendations for next steps</li>
+								<li>Planner: no prior context routes to <code>chat</code> (first turn); existing history routes to <code>follow_up</code>.</li>
+								<li>Orchestrator: coordinates the planner and reasoner.</li>
+								<li>PandasAI Reasoner: <code>agent.chat()</code> / <code>agent.follow_up()</code> for NL→SQL execution against PostgreSQL (Chinook), read-only.</li>
+								<li>Semantic layer: loads YAML schemas from datasets/chinook/ (tables and views such as music-analytics) into PandasAI sources.</li>
 							</ul>
 						</li>
 						<li>
-							<strong>Data analyst orchestrator</strong>
+							<strong>Memory</strong>
 							<ul>
-								<li>Parent LangGraph workflow that chains cleaning → EDA</li>
-								<li>Personally Identifiable Information (PII) checks on column names before any LLM call is made (e.g. email, phone, SSN patterns)</li>
-								<li>Fail-safe routing:
-									<ul>
-										<li>Stop the pipeline if PII-like columns are detected.</li>
-										<li>Skip EDA if cleaning fails — no analysis will be done on bad or incomplete data</li>
-									</ul>
-								</li>
+								<li>In-process store: last 10 turns per Slack channel (user / assistant).</li>
+								<li>Feeds follow-up rewriting in intake and execution mode in the engine.</li>
+							</ul>
+						</li>
+						<li>
+							<strong>Output</strong>
+							<ul>
+								<li>Formats conversational text and markdown tables for Slack.</li>
+								<li>When the user asks for a chart, graph, or plot: reads chart files from exports/charts, converts to base64, and uploads the image to Slack.</li>
+							</ul>
+						</li>
+						<li>
+							<strong>Quality</strong>
+							<ul>
+								<li>pytest tests for the validator, memory store, and context resolver (mocked LLM).</li>
 							</ul>
 						</li>
 					</ol>
-
-					<p class="project-pipeline"><strong>Full pipeline:</strong> Raw CSV → Sensitive-column check → Clean → Explore → Summary + recommendations</p>
+				
+					<p class="project-pipeline"><strong>Full pipeline:</strong> Slack message → Greeting/help (if applicable) → Load memory → Resolve effective query → Validate domain → Guardrails → Plan (chat vs follow_up) → PandasAI + semantic layer → PostgreSQL → Format response → Slack → Append memory</p>
 
 					<h2>How it works</h2>
+
 					<ul>
-						<li><strong>Input:</strong> Upload a CSV file and add additional instructions on how to clean (optional).</li>
-						<li><strong>Guardrail:</strong> Orchestrator scans column names for PII-like patterns. If flagged, the pipeline ends before passing it to the LLM model.</li>
-						<li><strong>Cleaning:</strong> Cleaning agent processes the data. Use Streamlit to inspect cleaned rows and before/after metrics (e.g. fewer nulls after cleaning).</li>
-						<li><strong>Routing:</strong> Orchestrator checks if the cleaning process is successful. If not, the EDA process is not triggered.</li>
-						<li><strong>EDA:</strong> EDA agent analyzes the cleaned dataset and returns a summary of the findings; based on those findings, recommendations are generated.</li>
-						<li><strong>Output:</strong> Cleaned data, EDA summary and recommendations, and any PII flags from the guardrail step.</li>
+						<li><strong>Input:</strong> User asks a question in Slack (natural language).</li>
+						<li><strong>Routing:</strong> Empty message, greeting, or help get fixed replies; otherwise load channel memory.</li>
+						<li><strong>Query shaping:</strong> If the message has music keywords, use it as-is; if not but history exists, the context resolver rewrites follow-ups (e.g. "top 3" becomes the full question based on memory).</li>
+						<li><strong>Guardrail (scope):</strong> Validator rejects out-of-domain questions with a clear message.</li>
+						<li><strong>Guardrail (safety):</strong> PII and blocked-pattern checks reject the request before the engine runs.</li>
+						<li><strong>Engine:</strong> Planner picks <code>chat</code> or <code>follow_up</code>; PandasAI generates and runs SQL using the semantic layer against the Chinook database.</li>
+						<li><strong>Output:</strong> Response builder sends text or tables, or uploads a chart image to Slack.</li>
+						<li><strong>Memory:</strong> Append the turn for the next follow-up.</li>
 					</ul>
 
-					<h3>Pipeline flow</h3>
-                    <figure class="project-graph">
-                    	<img src="images/data_analyst_agent_graph.png" alt="LangGraph orchestrator showing PII check, clean_data, and run_eda nodes with fail-safe routing to end" />
-                    	<figcaption>Orchestrator graph: PII check gates the pipeline; cleaning failures skip EDA.</figcaption>
-                    </figure>
+
+
+					<h2>Architecture</h2>
+					<figure class="project-screenshots">
+						<img src="images/System_Design.png" alt="System architecture: Slack → Intake → Memory → Engine → Semantic Layer / PostgreSQL → Response Builder → Slack" />
+						<figcaption>End-to-end flow: Slack message in, through intake guards, engine, and PostgreSQL, then formatted response back to Slack.</figcaption>
+					</figure>
+
+					<h2>Slack interactions</h2>
+
+					<figure class="project-screenshots">
+						<img src="images/sb5.JPG" alt="Slackbot returning a table of top 5 artists and then generating a bar chart from a follow-up request" />
+						<figcaption>Follow-up flow with chart generation: "top 5 artists with most songs" returns a table; "plot it please" resolves against the previous answer and uploads a chart to Slack.</figcaption>
+					</figure>
+
+					<figure class="project-screenshots">
+						<img src="images/sb1.JPG" alt="Slackbot correctly interpreting a typo-laden user question" />
+						<figcaption>Typo tolerance: "WHich artist ha s most albums" is correctly understood as a most-albums query — natural-language intake handles real human messiness, not just clean inputs.</figcaption>
+					</figure>
+
+					<details class="project-eda-details">
+						<summary>View more example interactions</summary>
+
+						<figure class="project-screenshots">
+							<img src="images/sb3.JPG" alt="Slackbot returning a markdown table of artists in the Rock genre" />
+							<figcaption>Natural-language query translated to SQL, returned as a formatted Slack table.</figcaption>
+						</figure>
+
+						<figure class="project-screenshots">
+							<img src="images/sb2.JPG" alt="Slackbot answering a single-value revenue question in plain text" />
+							<figcaption>Aggregate questions return a clean one-line text response instead of a table.</figcaption>
+						</figure>
+
+						<figure class="project-screenshots">
+							<img src="images/sb4.JPG" alt="Slackbot listing all genres in a markdown table" />
+							<figcaption>Simple list query: all genres returned as a table.</figcaption>
+						</figure>
+					</details>
 
 					<h2>Technical highlights</h2>
 					<ul>
-						<li>Three LangGraph agents: two task-specific (data cleaning agent, EDA agent) and one parent orchestrator.</li>
-						<li>Multi-agent composition: sub-agents invoked as nodes; orchestrator handles flow, integration, and routing.</li>
-						<li>Pre-LLM privacy guardrails: sensitive-column detection before data reaches models.</li>
-						<li>Fail-safe pipeline behavior: hard stop on PII; skip EDA on cleaning failure.</li>
-						<li>Streamlit before/after metrics: makes cleaning impact transparent and verifiable.</li>
-						<li>Modular design: cleaning and EDA agents can work as standalone processes or inside the full pipeline.</li>
+						<li>Three-layer architecture: Invoke, Engine, Output (plus Memory and Semantic Layer).</li>
+						<li>Multi-step agent pipeline: Planner, Orchestrator, and Reasoner (PandasAI) — not a single monolithic prompt.</li>
+						<li>Pre-engine guardrails: domain validation, PII detection, read-only enforcement, and prompt-injection patterns before NL→SQL runs.</li>
+						<li>Conversation memory: bounded per-channel history for follow-up resolution and <code>follow_up</code> mode.</li>
+						<li>YAML semantic layer: Chinook database table schemas and views for accurate, constrained SQL.</li>
+						<li>Separation of concerns: engine returns text or file paths; output layer handles Slack formatting and chart uploads.</li>
+						<li>Modular intake: validator, guardrails, and context resolver are testable independently with pytest.</li>
 					</ul>
 
 					<h2>Tech stack</h2>
-					<p>Python · Poetry · pandas · LangGraph · LangChain · OpenAI · Streamlit · python-dotenv · LangSmith</p>
+					<p class="project-tech-stack">Python · Poetry · Slack Bolt (Socket Mode) · PostgreSQL (Chinook) · PandasAI · pandas · LangChain · OpenAI · SQLAlchemy · psycopg2 · python-dotenv · pytest · LangSmith (optional)</p>
 
-					<h2>Outcomes</h2>
-					<p>A reusable agentic data analysis stack you can use in parts or as a whole:</p>
+					<h2>Outcome</h2>
+					<p>A reusable agentic "talk to your data" stack you can demo as a full Slack experience:</p>
 					<ul>
-						<li>Run cleaning alone and validate the impact in Streamlit.</li>
-						<li>Run EDA Agent on cleaned data and get a summary of findings and recommendations.</li>
-						<li>Or run the full pipeline from raw CSV to recommendations, with guardrails that reflect how you’d possibly handle real datasets.</li>
+						<li>Ask in-domain questions and get tables or charts in Slack without writing any SQL.</li>
+						<li>Handle follow-ups ("top 3", "chart for that") using memory and context resolution.</li>
+						<li>Reject unsafe or out-of-scope requests before they reach the database.</li>
+						<li>Extend with stronger SQL controls, persistent memory, or additional channels when moving beyond POC.</li>
 					</ul>
 
 					<h2>Links</h2>
 					<ul>
-						<li><strong>Data Cleaning Agent:</strong> <a href="https://github.com/azlanm10/data_cleaning_agent" target="_blank" rel="noopener noreferrer">azlanm10/data_cleaning_agent</a></li>
-						<li><strong>EDA Agent:</strong> <a href="https://github.com/azlanm10/eda_workflow" target="_blank" rel="noopener noreferrer">azlanm10/eda_workflow</a></li>
-						<li><strong>Data Analyst Agent:</strong> <a href="https://github.com/azlanm10/data_analyst_agent" target="_blank" rel="noopener noreferrer">azlanm10/data_analyst_agent</a></li>
+						<li><strong>GitHub:</strong> <a href="https://github.com/azlanm10/music_store_analytics_agent" target="_blank" rel="noopener noreferrer">azlanm10/music_store_analytics_agent</a></li>
+						<li><strong>Docs:</strong> <a href="https://github.com/azlanm10/music_store_analytics_agent#readme" target="_blank" rel="noopener noreferrer">README</a> · <a href="https://github.com/azlanm10/music_store_analytics_agent/blob/main/PROJECT_CONTEXT.md" target="_blank" rel="noopener noreferrer">PROJECT_CONTEXT</a></li>
 					</ul>
 				</div>
 			</section>
